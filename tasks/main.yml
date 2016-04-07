@@ -10,10 +10,10 @@
   when: ansible_distribution_release == 'precise'
 
 - name: add the rabbitmq repo key
-  apt_key: url="http://www.rabbitmq.com/rabbitmq-signing-key-public.asc" state=present
+  apt_key: data="{{ lookup('file', 'rabbitmq.asc') }}" state=present
 
 - name: add the erlang repo key
-  apt_key: url="http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc" state=present
+  apt_key: data="{{ lookup('file', 'erlang_solutions.asc') }}" state=present
   when: ansible_distribution_release == 'precise'
 
 - name: install rabbitmq-server
