@@ -23,7 +23,7 @@
     - rabbitmq-server
 
 - name: ensure rabbitmq is running
-  service: name=rabbitmq state=started
+  service: name=rabbitmq-server state=started
 
 - name: remove guest rabbitmq user
   rabbitmq_user: user=guest state=absent
