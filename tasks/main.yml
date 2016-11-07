@@ -57,5 +57,5 @@
     - restart rabbitmq
 
 - name: allow the app minions through the firewall for rabbitmq
-  ufw: rule=allow port=5672 from_ip={{ hostvars[item].ansible_eth0.ipv4.address }}
+  ufw: rule=allow port=5672 from_ip={{ hostvars[item].ansible_default_ipv4.address }}
   with_items: "{{ app_minions }}"
