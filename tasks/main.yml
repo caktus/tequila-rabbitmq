@@ -13,17 +13,6 @@
     update_cache: yes
   # Note: the update_cache above should only run if we changed the system's repository config
 
-# Rabbitmq-server now needs a newer Erlang than the repos provide in
-# 12.04.  We can get that from erlang-solutions.com for 12.04, but not
-# anything older than that, so we only address 12.04 here.
-- name: add erlang repo
-  apt_repository:
-    repo: "deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
-    state: present
-    update_cache: yes
-  when: ansible_distribution_release == 'precise'
-  # Note: the update_cache above should only run if we changed the system's repository config
-
 - name: install rabbitmq-server
   apt: name={{ item }} state=latest
   with_items:
