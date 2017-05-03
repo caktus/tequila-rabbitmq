@@ -1,15 +1,26 @@
 ---
-- name: add rabbitmq repo
-  apt_repository: repo="deb http://www.rabbitmq.com/debian/ testing main" state=present
-
 - name: add the rabbitmq repo key
-  apt_key: url="http://www.rabbitmq.com/rabbitmq-signing-key-public.asc" state=present
+  apt_key: data="{{ lookup('file', 'rabbitmq.asc') }}" state=present
+
+- name: add the erlang repo key
+  apt_key: data="{{ lookup('file', 'erlang_solutions.asc') }}" state=present
+  when: ansible_distribution_release == 'precise'
+
+- name: add rabbitmq repo
+  apt_repository:
+    repo: "deb http://www.rabbitmq.com/debian/ testing main"
+    state: present
+    update_cache: yes
+  # Note: the update_cache above should only run if we changed the system's repository config
 
 - name: install rabbitmq-server
-  apt: name=rabbitmq-server state=present
+  apt: name={{ item }} state=latest
+  with_items:
+    - erlang-nox
+    - rabbitmq-server
 
 - name: ensure rabbitmq is running
-  service: name=rabbitmq state=started
+  service: name=rabbitmq-server state=started
 
 - name: remove guest rabbitmq user
   rabbitmq_user: user=guest state=absent
@@ -43,5 +54,5 @@
     - restart rabbitmq
 
 - name: allow the app minions through the firewall for rabbitmq
-  ufw: rule=allow port=5672 from_ip={{ hostvars[item].ansible_eth0.ipv4.address }}
-  with_items: app_minions
+  ufw: rule=allow port=5672 from_ip={{ hostvars[item].ansible_default_ipv4.address }}
+  with_items: "{{ app_minions }}"
