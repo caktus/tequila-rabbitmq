@@ -2,10 +2,6 @@
 - name: add the rabbitmq repo key
   apt_key: data="{{ lookup('file', 'rabbitmq.asc') }}" state=present
 
-- name: add the erlang repo key
-  apt_key: data="{{ lookup('file', 'erlang_solutions.asc') }}" state=present
-  when: ansible_distribution_release == 'precise'
-
 - name: add rabbitmq repo
   apt_repository:
     repo: "deb http://www.rabbitmq.com/debian/ testing main"
